@@ -54,3 +54,16 @@ with app.app_context(): # Crea el contexto de la aplicación para crear las tabl
         return jsonify({"message": "Todos los registros han sido eliminados"}) # Devuelve un mensaje indicando que todos los registros han sido eliminados
     if __name__ == "__main__":
         app.run(debug=True)
+        
+    @app.get("/api/registros/<int:id>") # Define una ruta GET para obtener un registro específico por su ID
+    def obtener_registro(id):
+        # Buscar el registro por su ID
+        registro = Registro.query.get(id)
+
+        # Si no existe, devolver 404
+        if not registro:
+            return jsonify({"error": "Registro no encontrado"}), 404
+        # Si existe, devolverlo como JSON
+        return jsonify(registro.to_dict()), 200
+
+        
