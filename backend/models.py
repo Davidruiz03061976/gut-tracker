@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime # Importa la clase SQLAlchemy para manejar la base de datos y datetime para manejar las fechas
 
+
+# Define una columna para almacenar la fecha y hora de creación del registro, con un valor predeterminado de la fecha y hora actual
 db = SQLAlchemy() # Inicializa la instancia de SQLAlchemy
 
 class Registro(db.Model): # Define el modelo de datos para los registros de comidas y síntomas
@@ -11,7 +13,7 @@ class Registro(db.Model): # Define el modelo de datos para los registros de comi
     dolor = db.Column(db.Integer, nullable=False, default=0)
     hinchazon = db.Column(db.Integer, nullable=False, default=0)
     bristol = db.Column(db.Integer, nullable=False, default=0)
-    fecha = db.Column(db.DateTime, default=lambda: datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    fecha = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):# Método para convertir el objeto Registro a un diccionario, útil para serializar a JSON
         return {
