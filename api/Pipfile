@@ -18,6 +18,7 @@ python-dotenv = ">=1.0.0"
 sqlalchemy = "==2.0.46"
 typing-extensions = "==4.15.0"
 werkzeug = "==3.1.5"
+pydantic = ">=2.0.0"
 
 [dev-packages]
 
