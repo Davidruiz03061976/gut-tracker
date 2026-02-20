@@ -1,7 +1,9 @@
+from backend.auth.routes import auth_bp # Importa el Blueprint de autenticación desde el módulo auth
 from  flask import Flask, jsonify, request # Importa Flask para crear la aplicación web, jsonify para convertir objetos a JSON y request para manejar las solicitudes HTTP
 from flask_cors import CORS # Importa CORS para manejar las solicitudes de origen cruzado
 from models import db, Registro # Importa la instancia de SQLAlchemy y el modelo de datos Registro
 app = Flask(__name__)# Crea una instancia de la aplicación Flask
+app.register_blueprint(auth_bp)
 CORS(app) # Habilita CORS para la aplicación
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///registros.db" # Configura la URI de la base de datos SQLite
