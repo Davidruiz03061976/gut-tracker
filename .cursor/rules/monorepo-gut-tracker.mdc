@@ -1,0 +1,37 @@
+---
+description: Estructura monorepo, Pipenv api, package.json app, .env en raíz
+alwaysApply: true
+---
+
+# Monorepo GUT-TRACKER – Reglas de estructura
+
+## Estructura del repositorio
+
+- **Raíz del proyecto:** Configuración global y scripts de conveniencia. Desde la raíz se puede ejecutar `npm run dev:api`, `npm run dev:app` o `npm run dev` (ambos a la vez). No duplicar config en `app/` ni `api/`.
+- **`api/`:** Todo el código y gestión de dependencias del API (Flask, Python). **Solo Pipenv** para paquetes y scripts.
+- **`app/`:** Todo el código y gestión de dependencias de la aplicación (React, Vite). **Solo package.json** (npm/pnpm/yarn) para paquetes y scripts.
+
+## Configuración y variables de entorno
+
+- **Un único `.env` en la raíz** del monorepo. Usar para Flask, Vite y cualquier variable compartida.
+- API y app **leen siempre desde la raíz** (no crear `.env` dentro de `app/` ni `api/`).
+- Añadir nuevas variables en `.env.example` en la raíz y documentar su uso.
+
+## API (Pipenv)
+
+- **Gestión de paquetes:** Solo `Pipfile` y `Pipfile.lock`. No usar `pip install -r requirements.txt` para el flujo normal; usar `pipenv install` / `pipenv sync`.
+- **Scripts:** Definir en `[scripts]` del Pipfile (ej. `dev`, `run`, `test`). Ejecutar con `pipenv run <script>` desde `api/`.
+- **Entorno:** Activar con `pipenv shell` o ejecutar con `pipenv run`.
+- Añadir dependencias con `pipenv install <paquete>` (o `pipenv install --dev` para desarrollo).
+
+## App (package.json)
+
+- **Gestión de paquetes y scripts:** Todo en `app/package.json`. No añadir scripts ni dependencias en la raíz salvo que sea un workspace npm explícito.
+- Scripts típicos: `dev`, `build`, `preview`, `lint`. Ejecutar desde `app/` con `npm run dev` (o pnpm/yarn según el proyecto).
+
+## Al añadir features o fixes
+
+1. **API:** Cambios en dependencias → `pipenv install` en `api/`; nuevos scripts → `[scripts]` en Pipfile.
+2. **App:** Cambios en dependencias → `npm install` (o pnpm/yarn) en `app/`; nuevos scripts → `scripts` en `package.json`.
+3. **Configuración nueva:** Añadir a `.env.example` en raíz y usar desde api/app según corresponda.
+4. Mantener la separación: nada de lógica de API en `app/`, nada de UI o bundler en `api/`.

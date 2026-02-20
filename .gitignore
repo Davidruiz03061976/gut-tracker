@@ -1,5 +1,17 @@
-frontend/node_modules/
+# Dependencias y entornos virtuales
+app/node_modules/
 node_modules/
+api/.venv/
+.venv/
+
+# Build y artefactos
 dist/
+
+# Configuración sensible (solo .env en raíz; no duplicar en api/app)
 .env
+api/.env
+app/.env
+
+# Otros
 desktop.ini
+package-lock.json

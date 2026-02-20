@@ -1,0 +1,84 @@
+# Historial de Usuario y Descripción MVP - GUT-TRACKER
+
+## Descripción general
+GUT-TRACKER es un SaaS que permite a los usuarios registrar, monitorear y analizar sus pautas alimenticias y síntomas digestivos asociados, facilitando la identificación de alimentos que puedan causar malestar. Está dirigido a personas con condiciones como colon irritable, diabetes, intolerancias alimentarias, alto colesterol y otros problemas digestivos o metabólicos.
+
+## Historias de Usuario principales (User Stories)
+
+- **Como usuario registrado, quiero** poder ingresar fácilmente cada comida que consumo, **para** llevar un registro diario de mi alimentación.
+
+- **Como usuario, quiero** anotar síntomas digestivos (dolor abdominal, hinchazón, diarrea, constipación, tipo de heces según escala de Bristol, etc.) después de cada comida, **para** correlacionar comidas con posibles malestares.
+
+- **Como usuario, quiero** tener acceso a un historial visual de mis alimentos y síntomas en un calendario o lista, **para** poder identificar patrones a lo largo del tiempo.
+
+- **Como usuario, quiero** recibir alertas o sugerencias cuando ciertos alimentos correlacionen frecuentemente con síntomas negativos, **para** poder evitarlos en el futuro.
+
+- **Como usuario, quiero** asegurarme de que mis datos estén seguros y sean privados, **para** sentirme cómodo usando la aplicación con información sensible de salud.
+
+- **Como usuario, quiero** poder exportar mis registros en un formato PDF o Excel, **para** compartirlos con profesionales de la salud.
+
+## Alcance MVP
+
+- **Registro y autenticación de usuario:** permite a los usuarios crear una cuenta y acceder a sus datos privados.
+- **Formulario para registro de comidas:** ingreso sencillo del alimento, porciones y momento de ingesta.
+- **Formulario para síntomas digestivos:** registro fácil e intuitivo de nivel de dolor, hinchazón, urgencia, tipo de heces, etc.
+- **Visualización de historial:** listado y/o calendario mostrando correlación entre comidas y síntomas.
+- **Búsqueda y filtrado:** encontrar eventos específicos por alimento, fecha, síntomas, etc.
+- **Exportación de datos:** descarga básica de boletines de datos como respaldo o informe para profesionales.
+- **Privacidad y seguridad:** datos encriptados y perfil protegido por contraseña.
+
+## Características futuras deseadas 
+
+- Analítica avanzada y reportes automáticos.
+- Integraciones con API de alimentos y recomendaciones dietéticas.
+- Chatbot para recomendaciones personalizadas.
+- Notificaciones proactivas.
+- Soporte multi-idioma.
+
+Este MVP permitirá validar el interés y la utilidad del servicio en la población objetivo, recogiendo feedback para iteraciones futuras.
+
+
+
+# Reglas Obligatorias y Buenas Prácticas para el Proyecto GUT-TRACKER
+
+## Estructura del Monorepo
+
+- **Estructura raíz:**  
+  - Todos los archivos de configuración principales (.env, .gitignore, package.json, Pipfile, etc.) deben ubicarse en la raíz del repositorio.
+  - Deben existir dos carpetas principales:
+    - `API/` (Backend): Contendrá todo el código y recursos relacionados con el backend (Flask, Python, SQLAlchemy, PostgreSQL, etc.).
+    - `APP/` (Frontend): Contendrá todo el código y recursos relacionados con el frontend (ReactJS, TailwindCSS, etc.).
+
+- **Documentación:**
+  - Crear y mantener una carpeta `docs/` en la raíz del proyecto para almacenar toda la documentación técnica, funcional y de arquitectura.
+  - La documentación debe actualizarse inmediatamente después de cualquier cambio, corrección, o implementación de nueva funcionalidad en cualquier parte del proyecto, garantizando así que siempre esté sincronizada.
+  - Toda nueva funcionalidad, modificación o corrección requiere una actualización correspondiente en la documentación relevante, explicando el cambio y cómo afecta al proyecto.
+  - Incluir secciones de decisiones técnicas, arquitectura, endpoints, modelos de datos, y cualquier integración realizada.
+
+## Buenas Prácticas de Desarrollo
+
+- **Principios SOLID:**
+  - El código de servicios, módulos y componentes debe estar orientado a facilitar la escalabilidad y el mantenimiento, aplicando los principios SOLID en todas las capas posibles (tanto frontend como backend).
+
+- **Estandarización y Arquitectura:**
+  - Mantener una separación clara de responsabilidades (separación de concerns) entre la lógica de negocio, la presentación y el acceso a datos.
+  - Seguir patrones de arquitectura limpios y modulares en el diseño de carpetas y archivos.
+  - Utilizar control de versiones apropiadamente para todos los cambios (pull requests, revisiones y descripciones claras de commits).
+  - Revisar y respetar los estándares del stack tecnológico usado, manteniendo la alineación entre dependencias y la documentación de tecnologías en uso (`APP/package.json` y `API/Pipfile`).
+
+- **Configuración y Entorno:**
+  - Todas las variables de entorno y archivos sensibles deben estar debidamente gestionados y excluidos del control de versiones según lo especificado en `.gitignore`.
+  - Todas las configuraciones deben residir en la raíz y ser referenciadas globalmente en el monorepo.
+
+- **Flujo de Trabajo:**
+  - Antes de realizar cualquier despliegue o merge a rama principal, revisar la sincronización entre el código y la documentación en `docs/`.
+  - Deberá documentarse todo cambio relevante a nivel de arquitectura, endpoints, modelos, dependencias, o lógica de dominio.
+  - Asegurarse de que los tests y linters (frontend y backend) se ejecuten correctamente antes de aprobar cambios.
+
+- **Tecnologías Principales (Stack):**
+  - **Frontend:** ReactJS, TailwindCSS
+  - **Backend:** Flask, Python, SQLAlchemy, PostgreSQL
+  - El archivo `APP/package.json` y `API/Pipfile` deben consultarse para mantener la documentación del stack tecnológico actualizada y reflejando exactamente las versiones y librerías utilizadas.
+
+---
+Estas reglas son de estricto cumplimiento para asegurar un flujo de trabajo profesional, consistente, escalable y alineado a las mejores prácticas de la industria, manteniendo una documentación viva y un sistema de fácil mantenimiento para todo el equipo.

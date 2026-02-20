@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 
-const API_URL = "http://127.0.0.1:5000";
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
 function App() {
   // Estados del formulario
@@ -45,7 +45,7 @@ function App() {
   };
 
   // Guardar registro
-  const guardarDia = () => {
+  const guardarDia = async () => {
     const nuevoRegistro = {
       comida,
       urgencia,
@@ -54,7 +54,7 @@ function App() {
       bristol,
     };
 
-    return fetch(`${API_URL}/api/registros`, {
+    return await fetch(`${API_URL}/api/registros`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nuevoRegistro),
