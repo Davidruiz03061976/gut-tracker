@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
 from config import Config
 from models import db
@@ -10,6 +11,8 @@ from utils.handle_errors import register_error_handlers
 app = Flask(__name__)
 app.config.from_object(Config)
 CORS(app)
+app.config["JWT_SECRET_KEY"] = Config.JWT_SECRET_KEY
+jwt = JWTManager(app)
 
 # Blueprints: prefijo /api para todas las rutas del API
 app.register_blueprint(api_bp, url_prefix="/api")

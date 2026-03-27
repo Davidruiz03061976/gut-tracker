@@ -35,3 +35,5 @@ class Config:
     FLASK_ENV = get_env("FLASK_ENV", "development")
     SQLALCHEMY_DATABASE_URI = _sqlite_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    JWT_SECRET_KEY = "super-secret-key"  # Cambiar en producción, o cargar desde .env
