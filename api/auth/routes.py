@@ -1,7 +1,64 @@
-from flask import Blueprint
+from flask import Blueprint, request
+from werkzeug.security import generate_password_hash, check_password_hash
 
-auth_bp = Blueprint("auth",__name__)
+from models import db, User
+
+auth_bp = Blueprint("auth", __name__)
+
 
 @auth_bp.get("/auth/ping")
 def auth_ping():
     return {"msg": "auth ok"}, 200
+
+
+@auth_bp.post("/auth/register")
+def register():
+    data = request.get_json() or {}
+
+    email = (data.get("email") or "").strip().lower()
+    password = data.get("password") or ""
+
+    if not email or not password:
+        return {"error": "Email y password son obligatorios"}, 400
+
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return {"error": "Ese email ya está registrado"}, 409
+
+    password_hash = generate_password_hash(password)
+
+    user = User(
+        email=email,
+        password_hash=password_hash,
+    )
+
+    db.session.add(user)
+    db.session.commit()
+
+    return {
+        "message": "Usuario creado correctamente",
+        "user": user.to_dict()
+    }, 201
+
+
+@auth_bp.post("/auth/login")
+def login():
+    data = request.get_json() or {}
+
+    email = (data.get("email") or "").strip().lower()
+    password = data.get("password") or ""
+
+    if not email or not password:
+        return {"error": "Email y password son obligatorios"}, 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return {"error": "Credenciales inválidas"}, 401
+
+    if not check_password_hash(user.password_hash, password):
+        return {"error": "Credenciales inválidas"}, 401
+
+    return {
+        "message": "Login correcto",
+        "user": user.to_dict()
+    }, 200

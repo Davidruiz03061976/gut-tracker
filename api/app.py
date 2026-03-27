@@ -3,7 +3,7 @@ from flask_cors import CORS
 
 from config import Config
 from models import db
-from routes import api_bp
+from routes.api_routes import api_bp
 from auth.routes import auth_bp
 from utils.handle_errors import register_error_handlers
 
@@ -24,3 +24,4 @@ with app.app_context():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
