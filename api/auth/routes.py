@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
 from models import db, User
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -63,5 +64,18 @@ def login():
     return {
         "message": "Login correcto",
         "access_token": access_token,
+        "user": user.to_dict()
+    }, 200
+# Ruta protegida de ejemplo para verificar el token
+@auth_bp.get("/auth/me")
+@jwt_required()
+def me():
+    user_id = int(get_jwt_identity())
+    user = User.query.get(user_id)
+
+    if not user:
+        return {"error": "Usuario no encontrado"}, 404
+
+    return {
         "user": user.to_dict()
     }, 200

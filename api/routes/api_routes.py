@@ -3,7 +3,7 @@ Rutas bajo el prefijo /api.
 Las rutas se definen sin /api; el blueprint se registra con url_prefix="/api".
 """
 from flask import Blueprint, jsonify, request
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import Registro, User, db
 from schemas.registro_schema import RegistroCreateSchema
 from utils.handle_errors import BadRequestError, NotFoundError
@@ -17,17 +17,13 @@ def health():
 
 
 @api_bp.get("/registros")
+@jwt_required()
 def listar_registros():
-    user_id = request.args.get("user_id", type=int)
+    user_id = int(get_jwt_identity())
 
-    query = Registro.query
+    registros = Registro.query.filter_by(user_id=user_id).all()
 
-    if user_id is not None:
-        query = query.filter_by(user_id=user_id)
-
-    registros = query.all()
-    return jsonify([registro.to_dict() for registro in registros])
-
+    return [registro.to_dict() for registro in registros], 200
 
 @api_bp.get("/registros/<int:id>")
 def obtener_registro(id: int):
