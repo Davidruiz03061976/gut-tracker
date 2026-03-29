@@ -2,18 +2,20 @@
 Rutas bajo el prefijo /api.
 Las rutas se definen sin /api; el blueprint se registra con url_prefix="/api".
 """
+
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import Registro, User, db
-from schemas.registro_schema import RegistroCreateSchema
-from utils.handle_errors import BadRequestError, NotFoundError
+
+from ..models import Registro, db
+from ..schemas.registro_schema import RegistroCreateSchema
+from ..utils.handle_errors import BadRequestError, NotFoundError
 
 api_bp = Blueprint("api", __name__)
 
 
 @api_bp.get("/health")
 def health():
-    return jsonify({"status": "Backend funcionando correctamente"})
+    return jsonify({"status": "Backend funcionando correctamente"}), 200
 
 
 @api_bp.get("/registros")
@@ -23,37 +25,34 @@ def listar_registros():
 
     registros = Registro.query.filter_by(user_id=user_id).all()
 
-    return [registro.to_dict() for registro in registros], 200
+    return jsonify([registro.to_dict() for registro in registros]), 200
+
 
 @api_bp.get("/registros/<int:id>")
+@jwt_required()
 def obtener_registro(id: int):
-    user_id = request.args.get("user_id", type=int)
-    if user_id is None:
-        raise BadRequestError("user_id es obligatorio")
+    user_id = int(get_jwt_identity())
 
-    registro = Registro.query.get(id)
+    registro = Registro.query.filter_by(id=id, user_id=user_id).first()
+
     if not registro:
         raise NotFoundError("Registro no encontrado")
 
-    if registro.user_id != user_id:
-        raise NotFoundError("Registro no encontrado para este usuario")
+    return jsonify(registro.to_dict()), 200
 
-    return jsonify(registro.to_dict())
 
 @api_bp.post("/registros")
+@jwt_required()
 def crear_registro():
     data = request.get_json()
     if not data:
         raise BadRequestError("El cuerpo de la petición debe ser JSON")
 
+    user_id = int(get_jwt_identity())
     payload = RegistroCreateSchema.model_validate(data)
 
-    user = User.query.get(payload.user_id)
-    if not user:
-        raise NotFoundError("Usuario no encontrado")
-
     nuevo = Registro(
-        user_id=payload.user_id,
+        user_id=user_id,
         comida=payload.comida,
         urgencia=payload.urgencia,
         dolor=payload.dolor,
@@ -67,8 +66,17 @@ def crear_registro():
     return jsonify(nuevo.to_dict()), 201
 
 
-@api_bp.delete("/registros")
-def borrar_todo():
-    Registro.query.delete()
+@api_bp.delete("/registros/<int:id>")
+@jwt_required()
+def borrar_registro(id: int):
+    user_id = int(get_jwt_identity())
+
+    registro = Registro.query.filter_by(id=id, user_id=user_id).first()
+
+    if not registro:
+        raise NotFoundError("Registro no encontrado")
+
+    db.session.delete(registro)
     db.session.commit()
-    return jsonify({"message": "Todos los registros han sido eliminados"})
+
+    return jsonify({"message": "Registro eliminado correctamente"}), 200
