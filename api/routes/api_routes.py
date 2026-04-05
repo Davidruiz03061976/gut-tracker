@@ -23,7 +23,12 @@ def health():
 def listar_registros():
     user_id = int(get_jwt_identity())
 
-    registros = Registro.query.filter_by(user_id=user_id).all()
+    registros = (
+        Registro.query
+        .filter_by(user_id=user_id)
+        .order_by(Registro.fecha.desc())
+        .all()
+    )
 
     return jsonify([registro.to_dict() for registro in registros]), 200
 
@@ -44,7 +49,7 @@ def obtener_registro(id: int):
 @api_bp.post("/registros")
 @jwt_required()
 def crear_registro():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if not data:
         raise BadRequestError("El cuerpo de la petición debe ser JSON")
 

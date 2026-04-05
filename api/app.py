@@ -8,22 +8,35 @@ from .routes.api_routes import api_bp
 from .auth.routes import auth_bp
 from .utils.handle_errors import register_error_handlers
 
-app = Flask(__name__)
-app.config.from_object(Config)
+jwt = JWTManager()
 
-CORS(app)
-app.config["JWT_SECRET_KEY"] = Config.JWT_SECRET_KEY
-jwt = JWTManager(app)
 
-# Todo bajo /api
-app.register_blueprint(api_bp, url_prefix="/api")
-app.register_blueprint(auth_bp, url_prefix="/api")
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-register_error_handlers(app)
+    # CORS para el frontend
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-db.init_app(app)
-with app.app_context():
-    db.create_all()
+    # Inicializar extensiones
+    db.init_app(app)
+    jwt.init_app(app)
+
+    # Registrar blueprints
+    app.register_blueprint(api_bp, url_prefix="/api")
+    app.register_blueprint(auth_bp, url_prefix="/api")
+
+    # Registrar manejo de errores
+    register_error_handlers(app)
+
+    # Crear tablas
+    with app.app_context():
+        db.create_all()
+
+    return app
+
+
+app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True)

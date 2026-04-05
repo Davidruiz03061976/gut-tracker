@@ -14,7 +14,7 @@ def auth_ping():
 
 @auth_bp.post("/auth/register")
 def register():
-    data = request.get_json() or {}
+    data = request.get_json(silent=True) or {}
 
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
@@ -44,7 +44,7 @@ def register():
 
 @auth_bp.post("/auth/login")
 def login():
-    data = request.get_json() or {}
+    data = request.get_json(silent=True) or {}
 
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
@@ -72,7 +72,7 @@ def login():
 @jwt_required()
 def me():
     user_id = int(get_jwt_identity())
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if not user:
         return {"error": "Usuario no encontrado"}, 404
